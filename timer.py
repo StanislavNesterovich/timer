@@ -1,9 +1,13 @@
 import sys
 import os
-import time
+from time import *
+from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+
 TIME_LIMIT = 100
+
 class External(QThread):
     """
     Runs a counter thread.
@@ -19,22 +23,33 @@ class External(QThread):
 
 class Example(QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, ):
         super().__init__()
         self.initUI()
 
 
     def initUI(self):
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.Time)
+        self.timer.start(1000)
 
-        self.cancel = QPushButton('Cancel Shut Down', self)
+        # self.lcd = QtGui.QLCDNumber(self)
+        # self.lcd.display(strftime("%H" + ":" + "%M"))
+        #
+
+        QToolTip.setFont(QFont('SansSerif', 10))
+
+        self.cancel = QPushButton('Cancel', self)
         self.cancel.clicked.connect(self.cancelTimer)
         self.cancel.resize(250, 50)
         self.cancel.move(25, 300)
+        self.cancel.setToolTip('This button cancels the logout.')
 
         self.qbtn = QPushButton('Quit', self)
         self.qbtn.clicked.connect(QCoreApplication.instance().quit)
         self.qbtn.resize(250, 50)
         self.qbtn.move(25, 200)
+        self.qbtn.setToolTip("Exit from the program")
 
         self.pb_num1 = QPushButton('Set Timer', self)
         self.pb_num1.clicked.connect(self.show_dialog_num1)
@@ -42,13 +57,18 @@ class Example(QWidget):
         self.pb_num1.move(25, 400)
 
         self.progress = QProgressBar(self)
-        self.progress.setGeometry(0, 0, 300, 25)
+        self.progress.resize(285, 50)
+        self.progress.move(25, 0)
         self.progress.setMaximum(100)
 
+        self.setWindowIcon(QtGui.QIcon('icon.jpg'))
         self.resize(300, 600)
         self.center()
         self.setWindowTitle('Timer for Windows 10')
         self.show()
+
+    def Time(self):
+        self.lcd.display(strftime("%H" + ":" + "%M"))
 
     def center(self):
         qr = self.frameGeometry()
